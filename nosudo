@@ -1,0 +1,2 @@
+echo >/etc/udev/rules.d/flyspy-usb.rules '# visions sp6board\n
+SUBSYSTEM=="usb", ACTION=="add", ATTR{idVendor}=="04b4", ATTR{idProduct}=="1003", GROUP="plugdev", MODE="0660"'

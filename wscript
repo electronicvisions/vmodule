@@ -5,8 +5,7 @@ from waflib.extras import symwaf2ic
 
 
 def depends(ctx):
-    ctx('symap2ic', 'src/logging')
-
+    ctx('logger')
     if ctx.options.with_flansch:
         ctx('flansch')
 

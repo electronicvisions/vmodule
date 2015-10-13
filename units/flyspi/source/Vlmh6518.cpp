@@ -1,6 +1,7 @@
 #include "Vlmh6518.h"
 #include <bitset>
 #include <exception>
+#include <iostream>
 
 using namespace std;
 

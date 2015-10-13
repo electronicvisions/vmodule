@@ -3,6 +3,7 @@ using namespace std;
 
 #include <string>
 #include <list>
+#include <iostream>
 #include <fstream>
 
 #include "logger.h"

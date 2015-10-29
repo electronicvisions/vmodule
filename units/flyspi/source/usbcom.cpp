@@ -34,6 +34,9 @@ extern "C" {
 
 #include <log4cxx/logger.h>
 
+#include "traffic_logger.h"
+
+static VmodTrafficLogger trafficlogger;
 static log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("vmodule.usbcom");
 
 const int CMD_SIZE = 12; //fpga command field size
@@ -353,6 +356,7 @@ int usbcomm::bulktrans(unsigned char * outbuf, unsigned char * inbuf,int out,int
 	int statusOut = -999;
 	int actual_length_in = -1;
 	int actual_length_out = -1;
+	size_t effective_len = 0;
 	status= timed_bulk_transfer(mydev, EP_OUT, outbuf, out, &actual_length, timeout);
 	statusOut = status;
 	actual_length_out = actual_length;
@@ -361,6 +365,23 @@ int usbcomm::bulktrans(unsigned char * outbuf, unsigned char * inbuf,int out,int
 		statusIn = status;
 		actual_length_in = actual_length;
 	}
+	switch(outbuf[3]) {
+		case 3:
+			effective_len = ( (outbuf[8] << 24) + (outbuf[9] << 16) + (outbuf[10] << 8) + outbuf[11]) * 4;
+			trafficlogger.update(effective_len, actual_length_in);
+			break;
+		case 7:
+			effective_len = 4;
+			trafficlogger.update(effective_len, actual_length_in);
+			break;
+		case 10:
+			if (outbuf[16] == 0) {
+				effective_len = ( (outbuf[8] << 24) + (outbuf[9] << 16) + (outbuf[10] << 8) + outbuf[11]) * 4;
+				trafficlogger.update(effective_len, actual_length_in);
+			}
+			break;
+	}
+
 	if (statusIn != 0 || statusOut != 0) {
 		int charSize = 21;
 		char timeChars[charSize];

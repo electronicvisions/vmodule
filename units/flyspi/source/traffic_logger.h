@@ -8,7 +8,7 @@ class VmodTrafficLogger {
 	std::chrono::microseconds last_update;
 	size_t effective_data_sum;
 	size_t data_sum;
-	size_t traffic_res = 10e3; //in ns
+	int traffic_res = 10e3; //in ns
 	log4cxx::LoggerPtr perflogger = log4cxx::Logger::getLogger("vmodule.usbcomPerf");
 
 public:

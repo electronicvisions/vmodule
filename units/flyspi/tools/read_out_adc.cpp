@@ -15,6 +15,7 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/moment.hpp>
+#include <boost/program_options.hpp>
 using namespace boost::accumulators;
 
 #ifdef WITH_FLANSCH
@@ -24,6 +25,9 @@ using namespace boost::accumulators;
 #endif
 
 using namespace std;
+
+static const unsigned int usb_vendorid = 0x04b4;
+static const unsigned int usb_deviceid = 0x1003;
 
 float convert_to_voltage(unsigned int raw)
 {
@@ -39,11 +43,48 @@ int main(int argc, char* argv[]) {
 	Logger::instance("main", argc > 1 ? Logger::DEBUG1 : Logger::INFO, "");
 	Logger& log = Logger::instance();
 
+	/*
+	   Argparse stuff
+	*/
+	std::string adc_id;
+	bool trigger_now = false;
+
+	namespace po = boost::program_options;
+	po::options_description desc("Allowed options");
+	desc.add_options()
+		("help", "produce help message")
+		("adc", po::value<std::string>(&adc_id)->required(),
+			 "specify ADC board")
+		("trigger-now", po::bool_switch(&trigger_now),
+			"Execute the ADC trigger before reading memory.")
+	;
+
+	po::variables_map vm;
+	po::store(po::command_line_parser(argc, argv)
+					.options(desc)
+					.run()
+			, vm);
+
+	if (vm.count("help")) {
+		std::cout << std::endl << desc << std::endl;
+		return 0;
+	}
+	po::notify(vm);
+
 	//create the top of the tree
 #ifdef WITH_FLANSCH
 	Vmodulesim io(50023,"vtitan.kip.uni-heidelberg.de");
 #else
-	Vmoduleusb io(usbcomm::note,0x04b4,0x1003);
+	//create the top of the tree
+	Vmoduleusb io(usbcomm::note);
+
+	if(io.open(usb_vendorid, usb_deviceid, adc_id)){
+		std::cout << "Open failed" << std::endl;
+		return EXIT_FAILURE;
+	}
+	else {
+		std::cout << "Board " << adc_id << " opened" << std::endl;
+	}
 #endif
 
 	//create sp6 class tree
@@ -58,7 +99,8 @@ int main(int argc, char* argv[]) {
 	Vflyspi_adc adc(&ocp);//,FASTADC__BASEADR);
 
 	log(Logger::INFO) << "Serial number:" << io.getSerial();
-	log(Logger::INFO) << "Git revision of ADC bitfile: " << hex << adc.get_version();
+	log(Logger::INFO) << "Git revision of ADC bitfile: "
+		<< hex << adc.get_version();
 
 	/*
 	 * ADC configuration and readout
@@ -68,10 +110,10 @@ int main(int argc, char* argv[]) {
 	mux_board.set_Mux(Vmux_board::OUTAMP_2);
 	//mux_board.set_Mux(Vmux_board::MUX_GND);
 	//ocp.write(0x8000,(1<<24));
-	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl; 
-	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl; 
-	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl; 
-	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl; 
+	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl;
+	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl;
+	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl;
+	std::cout << "read: " << hex << ocp.read(0x8000) << std::endl;
 
 	unsigned int startaddr = 0;
 	unsigned int adc_num_samples = 0;
@@ -79,13 +121,20 @@ int main(int argc, char* argv[]) {
 
 	adc_num_samples = int(float(sample_time_us * 500) / 10.3) + 1;
 	log(Logger::DEBUG0) << "Num samples: " << adc_num_samples;
-	unsigned int endaddr = startaddr + adc_num_samples;
+	if (trigger_now)
+	{
+		unsigned int endaddr = startaddr + adc_num_samples;
 
-	// write configuration to adc
-	adc.configure(0);
-	// set adc into ready state
-	adc.setup_controller(startaddr,endaddr,0 /* single mode */,0 /* trigger enable */,0 /* trigger channel */);
-	adc.manual_trigger();
+		// write configuration to adc
+		adc.configure(0);
+		// set adc into ready state
+		adc.setup_controller(startaddr, endaddr,
+							 1, // single mode
+							 1, // trigger enable
+							 0  // trigger channel
+							 );
+		adc.manual_trigger();
+	}
 
 	// read data back from memory
 	Vbufuint_p data = mem.readBlock(startaddr+0x08000000,adc_num_samples);

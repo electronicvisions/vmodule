@@ -35,19 +35,8 @@ def configure(cfg):
 
 
 def build(bld):
-    flags = {
-        "cxxflags" : [
-            '-std=c++0x',
-            '-g',
-            '-O0',
-            #'-pedantic',
-            '-Wall',
-            '-Wextra',
-            '-Wno-c++0x-compat',
-            '-Wno-c++11-compat',
-            '-fPIC'
-        ]
-    }
+
+    cxxflags = []
 
     SOURCES = [
         'units/vmodule_base/source/vmodule.cpp',
@@ -76,12 +65,9 @@ def build(bld):
     vmodule_object_use = ['USB', 'logger_obj', 'vmodule_objects_inc', 'usbcomm']
 
     if bld.env.enable_flansch:
-        flags['cxxflags'].append('-DWITH_FLANSCH')
+        cxxflags.append('-DWITH_FLANSCH')
         SOURCES.append('units/vmodule_base/source/Vmodulesim.cpp')
         vmodule_object_use.extend(['flansch_inc','flansch_software'])
-
-    vflags = copy.copy(flags)
-    vflags['cxxflags'].append('-fPIC')
 
     bld (
         export_includes = '. units/vmodule_base/source/ units/flyspi/source/',
@@ -96,7 +82,7 @@ def build(bld):
         target = 'usbcomm',
         name   = 'usbcomm',
         use    = ['USB','logger_obj'],
-        **flags
+        cxxflags=cxxflags + ['-fPIC']
     )
 
     bld.objects(
@@ -104,7 +90,7 @@ def build(bld):
         target   = 'vmodule_objects',
         source   = SOURCES,
         use      = vmodule_object_use,
-        **flags
+        cxxflags=cxxflags + ['-fPIC']
     )
 
     for filename in bld.path.ant_glob('units/flyspi/tools/*.cpp'):
@@ -114,7 +100,7 @@ def build(bld):
             source = [filename],
             use = ['BOOST4FLISPY', 'USB', 'BOOST4FLYSPITOOLS', 'vmodule_objects', 'logger_obj'],
             install_path = 'bin',
-            **flags
+            cxxflags=cxxflags
         )
 
     if bld.env.enable_tests:
@@ -123,9 +109,4 @@ def build(bld):
             source          = bld.path.ant_glob('units/flyspi/test/*.cpp'),
             install_path    = os.path.join('bin', 'tests'),
             use             = [ 'vmodule_objects' ],
-            cxxflags        = [
-                    '-g', '-O0',
-                    '-std=c++0x',
-                    '-Wall',
-                    '-Wextra',
-            ])
+            )

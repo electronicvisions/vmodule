@@ -17,8 +17,8 @@ def options(opt):
     hopts = opt.add_option_group('Vmodule Options')
     hopts.add_withoption('flansch', default=False,
                    help='Enable/Disable flansch backend')
-    hopts.add_withoption('tests', default=False,
-                   help='Enable/Disable build of flyspi tests (changes dependencies -- use flag in setup)')
+    hopts.add_withoption('tests', default=True,
+                   help='Enable/Disable build of flyspi tests')
 
 
 def configure(cfg):

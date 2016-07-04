@@ -7,7 +7,7 @@ using namespace std;
 
 Vlmh6518::Vlmh6518(Vmodule<sp6adr,sp6data> *parent,uint badr):Vocpmodule(parent,badr)
 {
-};
+}
 
 void Vlmh6518::configure(bool aux, filter fil,preamp pre,int dB)
 {
@@ -34,6 +34,4 @@ void Vlmh6518::configure(bool aux, filter fil,preamp pre,int dB)
 	*(buf++) = ocpwrite | (baseadr + 0xc00) | ((spi_data.to_ulong()>>8)&0xff);
 	*buf = (spi_data.to_ulong()&0xff);
 	doWB();
-};
-
-
+}

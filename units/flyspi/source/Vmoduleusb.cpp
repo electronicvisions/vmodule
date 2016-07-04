@@ -25,7 +25,7 @@ Vmoduleusb::Vmoduleusb(uint loglevel, uint vendor, uint device):Vmodule<sp6adr,s
 	    throw std::runtime_error("Could not connect to USB board!");
 	}
 	else log(Logger::INFO) << "Connected to USB board.";
-};
+}
 
 Vmoduleusb::Vmoduleusb(uint loglevel, uint vendor, uint device, uint serial):Vmodule<sp6adr,sp6data>() {
 	Logger& log = Logger::instance();
@@ -37,7 +37,7 @@ Vmoduleusb::Vmoduleusb(uint loglevel, uint vendor, uint device, uint serial):Vmo
 	    throw std::runtime_error("Could not connect to USB board!");
 	}
 	else log(Logger::INFO) << "Connected to USB board.";
-};
+}
 
 Vmoduleusb::Vmoduleusb(uint loglevel, uint vendor, uint device, std::string serial) :
 	Vmodule<sp6adr,sp6data>()
@@ -51,7 +51,7 @@ Vmoduleusb::Vmoduleusb(uint loglevel, uint vendor, uint device, std::string seri
 	    throw std::runtime_error("Could not connect to USB board!");
 	}
 	else log(Logger::INFO) << "Connected to USB board.";
-};
+}
 
 
 Vmoduleusb::~Vmoduleusb() {

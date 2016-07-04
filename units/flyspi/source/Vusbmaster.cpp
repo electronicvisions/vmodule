@@ -85,7 +85,7 @@ void Vusbmaster::doTransfer(uint id)
 			getInbuf()->setPos(2);//first read position in stream is data
 			break;
 	}
-};
+}
 
 //check for ocp fifo entry by directly requesting from parent
 bool Vusbmaster::readOcpFifo(uint id)

@@ -6,7 +6,7 @@
 inline void Vflyspi_adc::writeBuf(sp6data * & buf ,uint adr, uint data){
 	*buf++=(adr+baseadr+ocpwrite);
 	*buf++=(data);
-};
+}
 
 
 //*** adc configuration functions

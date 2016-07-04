@@ -19,7 +19,7 @@ void Vspikeydac::enableReference() {
     *(buf++) = ocpwrite | (baseadr + 0xc00);
     *buf = 0x01;
     doWB();
-};
+}
 
 void Vspikeydac::disableReference() {
     sp6data *buf = writeBlock(0,4);
@@ -28,7 +28,7 @@ void Vspikeydac::disableReference() {
     *(buf++) = ocpwrite | (baseadr + 0xc00);
     *buf = 0;
     doWB();
-};
+}
 
 void Vspikeydac::setCurrent_uA(Channel channel, float current){
     // conversion consists of two parts
@@ -48,7 +48,7 @@ void Vspikeydac::setCurrent_uA(Channel channel, float current){
     *(buf++) = ocpwrite | (baseadr + 0xc00) | ((data>>2).to_ulong() & 0xff);
     *buf = (data.to_ulong()&0x3)<<6;
     doWB();
-};
+}
 
 void Vspikeydac::setVoltage(Channel channel, float voltage){
     std::bitset<14> data(voltage / 2.5 * 16384.);
@@ -85,4 +85,4 @@ void Vspikeydac::setVoltage(Channel channel, float voltage){
     *(buf++) = ocpwrite | (baseadr + 0xc00) | ((data>>2).to_ulong() & 0xff);
     *buf = (data.to_ulong()&0x3)<<6;
     doWB();
-};
+}

@@ -62,7 +62,7 @@ float Vspikeyslowadc::readVoltage(uint channel) {
 	LOG4CXX_DEBUG(logger, "Slow ADC (channel " << channel << "): " << dec << voltage << "V");
 
 	return voltage;
-};
+}
 
 void Vspikeyfastadc::setup_controller(uint32_t startaddr, uint32_t endaddr) {
     //write configuration
@@ -70,4 +70,4 @@ void Vspikeyfastadc::setup_controller(uint32_t startaddr, uint32_t endaddr) {
     set_addr(buf, startaddr, endaddr);
     
     doWB();
-};
+}

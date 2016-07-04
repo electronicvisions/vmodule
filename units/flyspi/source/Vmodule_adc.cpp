@@ -1,5 +1,9 @@
 #include "Vmodule_adc.h"
 
+uint16_t const Vflyspi_adc::adc_sample_size = 12; // bits
+uint16_t const Vflyspi_adc::adc_sample_mask = (1 << adc_sample_size) - 1;
+uint32_t const Vflyspi_adc::mem_read_offset = 0x08000000;
+size_t const Vflyspi_adc::samples_per_word = sizeof(sp6_word_t) / sizeof(adc_sample_t);
 
 //*** helper to fill buffer
 

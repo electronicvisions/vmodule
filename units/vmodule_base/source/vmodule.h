@@ -81,7 +81,8 @@ class uint_le {
 //uint assignment
     inline void operator=(const uint &nd){d=__builtin_bswap32(nd);};
 //conversion to uint
-    operator uint() const {return __builtin_bswap32(d);};
+    operator uint() const {return __builtin_bswap32(d);}
+    uint get_raw() const { return d; }
 };
 
 

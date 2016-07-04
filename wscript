@@ -104,9 +104,8 @@ def build(bld):
         )
 
     if bld.env.enable_tests:
-        bld(target          = 'flyspy-test',
+        bld(target          = 'vmodule_flyspi_test',
             features        = 'cxx cxxprogram gtest',
             source          = bld.path.ant_glob('units/flyspi/test/*.cpp'),
-            install_path    = os.path.join('bin', 'tests'),
             use             = [ 'vmodule_objects' ],
             )

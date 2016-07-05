@@ -72,6 +72,81 @@ inline void Vflyspi_adc::writeBuf(sp6data * & buf ,uint adr, uint data){
 		endaddr |= (read(endadr_lsb)&0xff)<<0;
 		return endaddr;
 	}
+
+	std::vector<Vflyspi_adc::adc_sample_t>
+	Vflyspi_adc::decompress(std::vector<Vflyspi_adc::adc_sample_t> const& cdata,
+	                        size_t const cnt_samples)
+	{
+		if (!enable_compression)
+			return cdata;
+
+		// pre-alloc output vector to max size
+		std::vector<adc_sample_t> ret;
+		ret.reserve(cdata.size() * 3);
+
+		// working set
+		unsigned v12[1];
+		unsigned v08[2];
+		unsigned v06[2];
+		unsigned v04[3];
+
+		// FIXME: add (compressed) memory-aligned i-frames (FPGA!) for omp
+		size_t i = 0;
+		adc_sample_t curr_value = 0;
+		for (; (i < cnt_samples) && (ret.size() < cnt_samples); i++) {
+			adc_sample_t const& value = cdata[i];
+			adc_sample_t header = (value >> 12) & 0xf;
+
+			v12[0] = ((0xfff & value));
+			v08[0] = ((0x0ff & value)) - 128;
+			v08[1] = ((0xff0 & value) >> 4) - 128;
+			v06[0] = ((0x03f & value)) - 32;
+			v06[1] = ((0xfc0 & value) >> 6) - 32;
+			v04[0] = ((0x00f & value)) - 8;
+			v04[1] = ((0x0f0 & value) >> 4) - 8;
+			v04[2] = ((0xf00 & value) >> 8) - 8;
+
+			switch (header) {
+				case 0: // uncompressed
+					curr_value = v12[0];
+					ret.push_back(curr_value);
+					break;
+				case 3:
+					curr_value += v08[1];
+					ret.push_back(curr_value);
+					curr_value += v04[0];
+					ret.push_back(curr_value);
+					break;
+				case 4:
+					curr_value += v06[1];
+					ret.push_back(curr_value);
+					curr_value += v06[0];
+					ret.push_back(curr_value);
+					break;
+				case 1:
+					curr_value += v04[2];
+					ret.push_back(curr_value);
+					curr_value += v08[0];
+					ret.push_back(curr_value);
+					break;
+				case 2:
+					curr_value += v04[2];
+					ret.push_back(curr_value);
+					curr_value += v04[1];
+					ret.push_back(curr_value);
+					curr_value += v04[0];
+					ret.push_back(curr_value);
+					break;
+				default:
+					throw std::runtime_error("ADC decompression error");
+			}
+		}
+		ret.resize(cnt_samples);
+		last_compression_factor = 1.0 * cdata.size() / i;
+		return ret;
+	}
+
+
 //get trigger config register
 	uint32_t Vflyspi_adc::get_trigger_status(){
 		uint32_t trigger_status = read(startstop&0xff);
@@ -221,3 +296,7 @@ inline void Vflyspi_adc::writeBuf(sp6data * & buf ,uint adr, uint data){
 		return value;
 	}
 	
+	double Vflyspi_adc::get_last_compression_factor()
+	{
+		return last_compression_factor;
+	}

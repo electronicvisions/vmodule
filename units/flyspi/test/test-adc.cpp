@@ -62,7 +62,8 @@ protected:
 
 	// config adc and fpga and acquire data from fpga memory
 	std::vector<Vflyspi_adc::adc_sample_t> config_and_sample(size_t const cnt_adc_samples,
-	                                                         Vflyspi_adc::modes const mode) {
+	                                                         Vflyspi_adc::modes const mode,
+	                                                         bool const compression = false) {
 		uint32_t const startaddr = 0;
 		uint32_t const endaddr = startaddr + cnt_adc_samples;
 
@@ -75,7 +76,8 @@ protected:
 		                      endaddr,
 		                      false /* single mode */,
 		                      false /* trigger enable */,
-		                      false /* trigger channel */);
+		                      false /* trigger channel */,
+		                      compression /* compression */);
 		adc->manual_trigger();
 
 		size_t const cnt_words_in_memory = (cnt_adc_samples + Vflyspi_adc::samples_per_word / 2)
@@ -101,7 +103,7 @@ protected:
 			samples.push_back(tmp);
 		}
 
-		return samples;
+		return adc->decompress(samples, cnt_adc_samples);
 	}
 
 private:
@@ -169,5 +171,63 @@ TEST_F(ADCHWTest, SampleSyntheticData) {
 				EXPECT_EQ(next_valid_value, value) << " at position " << i << std::endl;
 			}
 		}
+	}
+}
+
+/* Same test as above, but with active compression.
+ * It will soft-fail on old bitfiles (compression factor will be too low ;)).
+ */
+TEST_F(ADCHWTest, SampleSyntheticDataCompressed) {
+	size_t const TEST_SIZE = 1000 * 1000 + 1;
+
+	{
+		auto samples = config_and_sample(TEST_SIZE, Vflyspi_adc::ADC_ZEROS, /*compression*/ true);
+		std::vector<Vflyspi_adc::adc_sample_t> generated(TEST_SIZE, 0);
+		ASSERT_EQ(generated, samples);
+		EXPECT_GT(adc->get_last_compression_factor(), 2.9);
+	}
+
+	{
+		auto samples = config_and_sample(TEST_SIZE, Vflyspi_adc::ADC_ONES, /*compression*/ true);
+		std::vector<Vflyspi_adc::adc_sample_t> generated(TEST_SIZE, Vflyspi_adc::adc_sample_mask);
+		ASSERT_EQ(generated, samples);
+		EXPECT_GT(adc->get_last_compression_factor(), 2.9);
+	}
+
+	{
+		auto samples = config_and_sample(TEST_SIZE, Vflyspi_adc::ADC_TOGGLING, /*compression*/ true);
+		auto toggle_values = std::make_tuple(0xAAA, 0x555);
+		ASSERT_TRUE(samples.size() > 1);
+		ASSERT_NE(samples.at(0), samples.at(1));
+		ASSERT_TRUE((samples[0] == std::get<0>(toggle_values)) ||
+		            (samples[0] == std::get<1>(toggle_values)));
+		ASSERT_TRUE((samples[0] != samples[1]) && ((samples[1] == std::get<0>(toggle_values)) ||
+		                                           (samples[1] == std::get<1>(toggle_values))));
+		std::vector<Vflyspi_adc::adc_sample_t> generated(TEST_SIZE, samples[0]);
+		for (size_t i = 1; i < generated.size(); i += 2) {
+			generated[i] = samples[1];
+		}
+		ASSERT_EQ(generated, samples);
+		ASSERT_DOUBLE_EQ(adc->get_last_compression_factor(), 1.0);
+	}
+
+	{
+		auto samples = config_and_sample(TEST_SIZE, Vflyspi_adc::ADC_RAMP, /*compression*/ true);
+		ASSERT_EQ(samples.size(), TEST_SIZE);
+		Vflyspi_adc::adc_sample_t last_value = samples.at(0);
+
+		for (size_t no_same = 0, i = 1; i < samples.size(); i++) {
+			Vflyspi_adc::adc_sample_t value = samples.at(i);
+			Vflyspi_adc::adc_sample_t next_valid_value = (last_value + 1) & Vflyspi_adc::adc_sample_mask;
+			if (value == last_value) {
+				no_same++;
+				EXPECT_LE(no_same, 3) << " at position " << i << std::endl;
+			} else {
+				last_value = value;
+				no_same = 0;
+				EXPECT_EQ(next_valid_value, value) << " at position " << i << std::endl;
+			}
+		}
+		EXPECT_GT(adc->get_last_compression_factor(), 2.9);
 	}
 }

@@ -6,7 +6,10 @@
 class Vflyspi_adc : protected Vocpmodule {
 
 	public:
-		Vflyspi_adc(Vmodule<sp6adr,sp6data> *parent):Vocpmodule(parent,0x3000) {};
+		Vflyspi_adc(Vmodule<sp6adr,sp6data> *parent) :
+			Vocpmodule(parent,0x3000),
+			last_compression_factor(0.0)
+		{}
 
 		struct Status {
 			uint32_t start_addr;
@@ -42,6 +45,10 @@ class Vflyspi_adc : protected Vocpmodule {
 		static uint32_t const mem_read_offset;
 		static size_t const samples_per_word;
 
+// Decompress ADC samples according to issue #1879 (works on host-byte-order vector of samples)
+		std::vector<adc_sample_t>
+		decompress(std::vector<adc_sample_t> const& cdata, size_t const cnt_samples);
+
 // WARNING: use these for debug only
 		uint32_t get_trigger_status();
 		Status get_status();
@@ -58,6 +65,7 @@ class Vflyspi_adc : protected Vocpmodule {
 	//write to the configuration register
 		using Vocpmodule::write;
 
+		double get_last_compression_factor();
 
 	private:
 //adress of configuration register
@@ -86,4 +94,5 @@ class Vflyspi_adc : protected Vocpmodule {
 		inline void writeBuf(sp6data * & buf ,uint adr, uint data);
 
 		bool enable_compression;
+		double last_compression_factor;
 }

@@ -27,8 +27,10 @@ class Vflyspi_adc : protected Vocpmodule {
 //trigger configuration functions
 		uint32_t get_startaddr();
 		uint32_t get_endaddr();
-        void set_addr(sp6data *buf, uint32_t startaddr, uint32_t endaddr);
-		void setup_controller(uint32_t startaddr, uint32_t endaddr, bool singlemode,bool trigger_enabled, bool trigger_channel=0);
+		void set_addr(sp6data *buf, uint32_t startaddr, uint32_t endaddr);
+		void setup_controller(uint32_t startaddr, uint32_t endaddr, bool singlemode,
+		                      bool trigger_enabled, bool trigger_channel = false,
+		                      bool activate_compression = false);
 
 		// magic numbers from ADC datasheet and FPGA firmware
 		enum modes { ADC_NORMAL = 0, ADC_ZEROS = 1, ADC_ONES = 2, ADC_TOGGLING = 3, ADC_RAMP = 4, ADC_CUSTOM = 5};
@@ -61,11 +63,27 @@ class Vflyspi_adc : protected Vocpmodule {
 //adress of configuration register
 		static const unsigned int ocpwrite = 0x80000000;
 
-//numbering for adc registers
-		enum adcregs {startadr_msb,startadr_2,startadr_1,startadr_lsb,endadr_msb,endadr_2,endadr_1,endadr_lsb,config,startstop,cmdfull,commitid};
+		// numbering for adc registers
+		enum adcregs {
+			startadr_msb, //  0
+			startadr_2,   //  1
+			startadr_1,   //  2
+			startadr_lsb, //  3
+			endadr_msb,   //  4
+			endadr_2,     //  5
+			endadr_1,     //  6
+			endadr_lsb,   //  7
+			config,       //  8
+			startstop,    //  9
+			cmdfull,      // 10
+			commitid,     // 11
+			compression   // 12
+		}; // FIXME: really bad code, addressing bytes within words can be solved more nicely
 
 //values for starting and stopping manual recording
 		enum start_m {start_val=1,stop_val=2};
 //ocp package function
 		inline void writeBuf(sp6data * & buf ,uint adr, uint data);
+
+		bool enable_compression;
 }

@@ -147,13 +147,21 @@ inline void Vflyspi_adc::writeBuf(sp6data * & buf ,uint adr, uint data){
 		writeBuf(buf, endadr_lsb,(endaddr>>0)&0xff);
     }
 
-	void Vflyspi_adc::setup_controller(uint32_t startaddr, uint32_t endaddr, bool single_mode, bool trigger_enabled, bool trigger_channel) {
-//write configuration
+	void Vflyspi_adc::setup_controller(uint32_t startaddr, uint32_t endaddr, bool single_mode,
+	                                   bool trigger_enabled, bool trigger_channel,
+	                                   bool activate_compression)
+	{
+		enable_compression = activate_compression;
+
+		// write configuration
 		sp6data *buf=writeBlock(0,18);
-        set_addr(buf, startaddr, endaddr);
-// set enable and single shot bit, set start and stop bit to zero
-		writeBuf(buf, startstop,static_cast<sp6data>((trigger_channel<<4) | (trigger_enabled<<3) | (single_mode<<2) | 0x00 ));
-		
+		set_addr(buf, startaddr, endaddr);
+		// set enable and single shot bit, set start and stop bit to zero
+		writeBuf(buf, startstop,
+		         static_cast<sp6data>((trigger_channel << 4) | (trigger_enabled << 3) |
+		                              (single_mode << 2) | 0x00));
+		writeBuf(buf, compression, static_cast<sp6data>(enable_compression ? 0xffff : 0));
+
 		doWB();
 	}
 	

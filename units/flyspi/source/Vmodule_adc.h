@@ -95,4 +95,4 @@ class Vflyspi_adc : protected Vocpmodule {
 
 		bool enable_compression;
 		double last_compression_factor;
-}
+};

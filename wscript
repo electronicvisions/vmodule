@@ -104,8 +104,9 @@ def build(bld):
         )
 
     if bld.env.enable_tests:
-        bld(target          = 'vmodule_flyspi_test',
+        bld(target          = 'vmodule_flyspi_hwtests',
             features        = 'cxx cxxprogram gtest',
             source          = bld.path.ant_glob('units/flyspi/test/*.cpp'),
             use             = [ 'vmodule_objects' ],
+            skip_run        = True
             )

@@ -15,12 +15,12 @@ def depends(ctx):
 
 def options(opt):
     recurse(opt)
-    opt.load('g++')
+    opt.load('compiler_cxx')
     opt.load('gtest')
 
 def configure(cfg):
     recurse(cfg)
-    cfg.load('g++')
+    cfg.load('compiler_cxx')
     cfg.load('gtest')
 
 def build(bld):

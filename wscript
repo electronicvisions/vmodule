@@ -11,7 +11,7 @@ def depends(ctx):
 
 
 def options(opt):
-    opt.load('g++')
+    opt.load('compiler_cxx')
     opt.load('boost')
 
     hopts = opt.add_option_group('Vmodule Options')
@@ -22,7 +22,7 @@ def options(opt):
 
 
 def configure(cfg):
-    cfg.load('g++')
+    cfg.load('compiler_cxx')
     cfg.load('boost')
 
     cfg.check_boost(lib='system thread serialization', uselib_store='BOOST4PYFLYSPI')

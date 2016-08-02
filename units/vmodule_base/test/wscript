@@ -31,4 +31,5 @@ def build(bld):
         source          = bld.path.ant_glob('*.cpp'),
         install_path    = os.path.join('bin', 'tests'),
         use             = [ 'vmodule_objects' ],
+        cxxflags        = [ '-std=c++11' ],
     )

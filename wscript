@@ -36,7 +36,7 @@ def configure(cfg):
 
 def build(bld):
 
-    cxxflags = []
+    cxxflags = [ '-std=c++11' ]
 
     SOURCES = [
         'units/vmodule_base/source/vmodule.cpp',
@@ -108,5 +108,6 @@ def build(bld):
             features        = 'cxx cxxprogram gtest',
             source          = bld.path.ant_glob('units/flyspi/test/*.cpp'),
             use             = [ 'vmodule_objects' ],
-            skip_run        = True
+            skip_run        = True,
+            cxxflags        = cxxflags
             )

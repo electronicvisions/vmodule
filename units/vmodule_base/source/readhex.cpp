@@ -97,7 +97,7 @@ int readhex(const char * mcsfile,unsigned char *buf,size_t bufsize)
     unsigned int	addr =0;
     unsigned int	sign =0;
     unsigned int	page =0;
-    unsigned char	ch, *p;
+    unsigned char	ch, *p = binbuffer;
     int	count;
     int 	i;
 

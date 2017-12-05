@@ -21,10 +21,7 @@
 #include <chrono>
 extern "C" {
 #include <sys/types.h>
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-pedantic"
 #include <libusb.h>
-#pragma GCC diagnostic pop
 }
 #include "error_base.h"
 #include <boost/format.hpp>
@@ -384,7 +381,10 @@ int usbcomm::bulktrans(unsigned char * outbuf, unsigned char * inbuf,int out,int
 
 	if (statusIn != 0 || statusOut != 0) {
 		int charSize = 21;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wvla"
 		char timeChars[charSize];
+#pragma GCC diagnostic pop
 		time_t t = time(0);
 		strftime(timeChars, charSize, "%Y-%m-%d %H:%M:%S ", localtime(&t));
 
@@ -433,12 +433,12 @@ int usbcomm::burstread(uint addr, size_t size){
 
 	int actual_length;
 	status= libusb_bulk_transfer( mydev, EP_OUT, outbuf, 512, &actual_length, timeout);
-	if (status== 0 && actual_length == 512)
+	if (status== 0 && actual_length == 512) 
 		status= libusb_bulk_transfer( mydev, EP_IN, buf, burstsize, &actual_length, timeout);
-		if (status != 0) {
-			throw flyspi::DeviceError(__PRETTY_FUNCTION__,
-				"submitting USB transfer failed", status);
-		}
+	if (status != 0) {
+		throw flyspi::DeviceError(__PRETTY_FUNCTION__,
+			"submitting USB transfer failed", status);
+	}
 
 	//monitor data blocks
 	pretty_print_buffer("Outbuf", 16, outbuf);
@@ -463,10 +463,10 @@ int usbcomm::burstwrite(uint addr, size_t size){
 	status= libusb_bulk_transfer( mydev, EP_OUT, buf, burstsize, &actual_length, timeout);
 	if (status== 0 && actual_length == (int)burstsize)
 		status= libusb_bulk_transfer( mydev, EP_IN, inbuf, 512, &actual_length, timeout);
-		if (status != 0) {
-			throw flyspi::DeviceError(__PRETTY_FUNCTION__,
-				"submitting USB transfer failed", status);
-		}
+	if (status != 0) {
+		throw flyspi::DeviceError(__PRETTY_FUNCTION__,
+			"submitting USB transfer failed", status);
+	}
 
 	//monitor data blocks
 	pretty_print_buffer("Outbuf", burstsize, buf);
@@ -491,10 +491,10 @@ int usbcomm::burstwriteocp(size_t size){
 	status= libusb_bulk_transfer( mydev, EP_OUT, buf, burstsize, &actual_length, timeout);
 	if (status== 0 && actual_length == (int)burstsize)
 		status= libusb_bulk_transfer( mydev, EP_IN, inbuf, 512, &actual_length, timeout);
-		if (status != 0) {
-			throw flyspi::DeviceError(__PRETTY_FUNCTION__,
-				"submitting USB transfer failed", status);
-		}
+	if (status != 0) {
+		throw flyspi::DeviceError(__PRETTY_FUNCTION__,
+			"submitting USB transfer failed", status);
+	}
 
 	//monitor data blocks
 	pretty_print_buffer("Outbuf", burstsize, buf);

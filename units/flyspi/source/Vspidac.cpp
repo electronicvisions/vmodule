@@ -38,9 +38,9 @@ void Vspikeydac::setCurrent_uA(Channel channel, float current){
 
     if (channel != IREFDAC)
         throw std::logic_error("Can't set current to channels other than IREFDAC in Vspikeydac");
-	uint channelTmp = 6;
+    uint channelTmp = 6;
 
-	//std::cout << "Writing " << current << " uA to channel " << channelTmp << std::endl;
+    //std::cout << "Writing " << current << " uA to channel " << channelTmp << std::endl;
 
     sp6data *buf = writeBlock(0,4);
     *(buf++) = ocpwrite | (baseadr + 0x403);

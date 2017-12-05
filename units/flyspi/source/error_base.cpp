@@ -4,10 +4,7 @@
 #include <errno.h>
 
 extern "C" {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-pedantic"
 #include <libusb.h>
-#pragma GCC diagnostic pop
 }
 
 namespace flyspi {

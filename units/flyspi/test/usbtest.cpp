@@ -56,7 +56,7 @@ TEST(USBTest, IDontKnowWhatItDoes)
 
 
 				int seed=time(NULL);
-				int loops=10;
+				//int loops=10;
 				int base=1<<27; //second memory
 				srand(seed);	
 				int test;	
@@ -74,8 +74,8 @@ TEST(USBTest, IDontKnowWhatItDoes)
 				}
 		*/		
 				// same with burst
-				int size = 0x200000; //mehr geht nicht?
-				int blocks = 1; //64;    //16*256;//(0x4000000-1) / size; //64 M Langworte
+				unsigned int size = 0x200000; //mehr geht nicht?
+				unsigned int blocks = 1; //64;    //16*256;//(0x4000000-1) / size; //64 M Langworte
 				base=0;            //1<<27;
 				int adr=base; //second memory
 	
@@ -84,9 +84,9 @@ TEST(USBTest, IDontKnowWhatItDoes)
 	
 				srand(seed);	
 				printf("Writeburst\n");
-				for(int l=0;l<blocks;l++){
+				for(unsigned int l=0;l<blocks;l++){
 					if(!(l%1))printf("%08x\n",adr*4);
-					for(int j=0;j<size;j++)bbuf[j]=rand();
+					for(unsigned int j=0;j<size;j++)bbuf[j]=rand();
 					myusb.burstwrite(adr,size);
 					adr+=size;
 					if(adr>0x3ffffff && adr<(1<<27))adr=1<<27; //switch to second memory block
@@ -97,11 +97,11 @@ TEST(USBTest, IDontKnowWhatItDoes)
 //			size=0x1;
 				adr=base;
 				srand(seed);
-				for(int l=0;l<blocks;l++){
+				for(unsigned int l=0;l<blocks;l++){
 					if(!(l%1))printf("%08x\n",adr*4);
 					myusb.burstread(adr,size);
 //					myusb.read(adr,result);bbuf[0]=result;
-					for(int j=0;j<size;j++){
+					for(unsigned int j=0;j<size;j++){
 						test=rand();
 						if(test!=bbuf[j])printf("%08x %08x %08x\n",(j+adr)*4,test,bbuf[j]);
 						ASSERT_EQ(test,bbuf[j]);

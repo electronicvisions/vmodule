@@ -76,7 +76,7 @@ int64_t memtest_orig( Vmemory& mem, ts_t testsize, uint loops) {
 							
 	}
 	return errors;
-};
+}
 
 
 TEST(VMTest, original)

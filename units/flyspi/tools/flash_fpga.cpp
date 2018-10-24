@@ -103,8 +103,8 @@ int main(int argc, char** argv){
 
 	uint secadr=0;
 	int numread=256;
-	ubyte buf[numread];
-	confrom.read_mem(secadr,buf,numread);
+	std::vector<ubyte> buf(numread);
+	confrom.read_mem(secadr,&(buf[0]),numread);
 	for(int i=0;i<numread;i++){
 		printf("%02x ", buf[i]);
 		if(!((i+1)%16))printf("\n");

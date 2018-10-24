@@ -34,7 +34,7 @@ float convert_to_voltage(unsigned int raw)
 	return static_cast<float>(raw*(-0.000356387)+1.17011);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* /*argv*/[]) {
 	/*
 	 * Communication stack
 	 */

@@ -111,7 +111,7 @@ namespace {
 		ocpw(usb,0x2d80|XTAL_CFG,0x08); //xtal_cfg
 		ocpw(usb,0x2d80|AUTO_CAL_TIME,0x3c); //datasheets value
 		ocpw(usb,0x2d80|AUTO_CAL_OFFSET,0x14); //datasheets value
-	};	
+	}
 
 }
 

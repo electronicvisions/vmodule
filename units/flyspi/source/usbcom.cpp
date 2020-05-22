@@ -33,7 +33,6 @@ extern "C" {
 
 #include "traffic_logger.h"
 
-static VmodTrafficLogger trafficlogger;
 static log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("vmodule.usbcom");
 
 const int CMD_SIZE = 12; //fpga command field size
@@ -348,6 +347,7 @@ static int timed_bulk_transfer(
 
 int usbcomm::bulktrans(unsigned char * outbuf, unsigned char * inbuf,int out,int in)
 {
+	static VmodTrafficLogger trafficlogger;
 	int actual_length;
 	int statusIn = -999;
 	int statusOut = -999;

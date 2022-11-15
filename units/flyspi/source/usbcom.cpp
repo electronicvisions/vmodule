@@ -340,7 +340,7 @@ static int timed_bulk_transfer(
 		status= libusb_bulk_transfer(dev_handle, endpoint, data, length, transferred, timeout);
 		LOG4CXX_TRACE(logger, (endpoint == usbcomm::EP_OUT ? "Outgoing" : "Incoming")
 				<< " bulk trans of "
-				<< length << " bytes.")
+				<< length << " bytes.");
 	}
 	return status;
 }

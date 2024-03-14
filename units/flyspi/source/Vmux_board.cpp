@@ -101,8 +101,8 @@ static log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("vmodule.Vmux_boar
 	{
 		uint mux_adr = 0;
 		if(mode == 0) {
+			LOG4CXX_DEBUG(logger, "set mux in mode 0");
 			switch(in) {   // old spikey board as analog front end
-				LOG4CXX_DEBUG(logger, "set mux in mode 0");
 				case OUTAMP_0: mux_adr = 1<<18; break;
 				case OUTAMP_1: mux_adr = 1<<19; break;
 				case OUTAMP_2: mux_adr = 1<<18 | 1<<19; break;

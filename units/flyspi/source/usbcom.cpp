@@ -44,7 +44,7 @@ usbcomm::usbcomm(int loglevel) :
 	status = libusb_init(&context);
 	mydev = NULL;
 	buf = NULL;
-	libusb_set_debug(context, loglevel);
+	libusb_set_option(context, LIBUSB_OPTION_LOG_LEVEL, loglevel);
 }
 
 std::string usbcomm::getSerial() {
@@ -433,7 +433,7 @@ int usbcomm::burstread(uint addr, size_t size){
 
 	int actual_length;
 	status= libusb_bulk_transfer( mydev, EP_OUT, outbuf, 512, &actual_length, timeout);
-	if (status== 0 && actual_length == 512) 
+	if (status== 0 && actual_length == 512) 
 		status= libusb_bulk_transfer( mydev, EP_IN, buf, burstsize, &actual_length, timeout);
 	if (status != 0) {
 		throw flyspi::DeviceError(__PRETTY_FUNCTION__,

@@ -5,7 +5,7 @@
 
 #include "vmodule.h"
 #include "vmsp6.h"
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 #include "usbcom.h"
 
 

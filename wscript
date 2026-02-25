@@ -62,7 +62,7 @@ def build(bld):
         'units/flyspi/source/Vlmh6518.cpp',
     ]
 
-    vmodule_object_use = ['USB', 'logger_obj', 'vmodule_objects_inc', 'usbcomm']
+    vmodule_object_use = ['USB', 'logger', 'vmodule_objects_inc', 'usbcomm']
 
     if bld.env.enable_flansch:
         cxxflags.append('-DWITH_FLANSCH')
@@ -81,7 +81,7 @@ def build(bld):
         ],
         target = 'usbcomm',
         name   = 'usbcomm',
-        use    = ['USB','logger_obj'],
+        use    = ['USB','logger'],
         cxxflags=cxxflags + ['-fPIC']
     )
 
@@ -98,7 +98,7 @@ def build(bld):
         bld.program (
             target = os.path.splitext(split[len(split)-1])[0],
             source = [filename],
-            use = ['BOOST4FLISPY', 'USB', 'BOOST4FLYSPITOOLS', 'vmodule_objects', 'logger_obj'],
+            use = ['BOOST4FLISPY', 'USB', 'BOOST4FLYSPITOOLS', 'vmodule_objects', 'logger'],
             install_path = 'bin',
             cxxflags=cxxflags
         )

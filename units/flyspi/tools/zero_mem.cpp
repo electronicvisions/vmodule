@@ -20,7 +20,7 @@
 #include "vmodule.h"
 #include "vmsp6.h"
 
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 static log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("main");
 

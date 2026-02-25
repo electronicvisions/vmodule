@@ -12,7 +12,7 @@ using namespace std;
 #include <gtest/gtest.h>
 #include <list>
 
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 #include "vmodule.h"
 #include "Vmemory.h"

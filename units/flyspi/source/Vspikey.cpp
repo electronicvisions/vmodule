@@ -12,7 +12,7 @@ using namespace std;
 #include <list>
 #include <bitset>
 
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 #include "vmodule.h"
 #include "vmsp6.h"

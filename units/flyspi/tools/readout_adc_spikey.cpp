@@ -11,7 +11,7 @@
 #include <fstream>
 #include <math.h>
 
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 int main (int argc, char *argv[]) {
 	//configure logger

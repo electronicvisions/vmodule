@@ -5,7 +5,7 @@ using namespace std;
 #include <gtest/gtest.h>
 #include <list>
 #include "vmodule.h"
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 //Viomodule is the top of the Vmodule tree and connects the buffer to an io device
 //in this test case it is cout

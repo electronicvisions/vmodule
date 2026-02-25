@@ -5,7 +5,7 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 #include "vmodule.h"
 #include "vmsp6.h"

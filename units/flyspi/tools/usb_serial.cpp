@@ -1,5 +1,5 @@
 #include <libusb.h>
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 using namespace std;
 

@@ -8,7 +8,7 @@
 // new electronic visions slow-control base class for sp6board
 
 #include <list>
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 #include "vmodule.h"
 #include "Vbufptr.hpp"

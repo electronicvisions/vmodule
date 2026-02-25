@@ -11,7 +11,7 @@ using namespace std;
 #include <cstring>
 #include <list>
 
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 
 #include "vmodule.h"
 #include "vmsp6.h"

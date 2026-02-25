@@ -15,7 +15,7 @@ using namespace std;
 
 #include <boost/program_options.hpp>
 
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 #include "vmodule.h"
 #include "vmsp6.h"

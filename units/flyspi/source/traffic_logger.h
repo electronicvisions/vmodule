@@ -1,6 +1,6 @@
 #include <chrono>
 #include <mutex>
-#include "logger.h"      // global logging class
+#include "logger/log4cxx/logger.h"      // global logging class
 
 class VmodTrafficLogger {
 

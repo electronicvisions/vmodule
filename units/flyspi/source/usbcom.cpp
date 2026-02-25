@@ -25,7 +25,7 @@ extern "C" {
 }
 #include "error_base.h"
 #include <boost/format.hpp>
-#include "logger.h"
+#include "logger/log4cxx/logger.h"
 #include <string>
 #include <time.h>
 

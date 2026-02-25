@@ -16,7 +16,7 @@ using namespace std;
 #include "Vmodulesim.h"
 #include "vmodule.h"
 #include "vmsp6.h"
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 void Vmodulesim::initTransfer(uint id,Vrequest<sp6adr> &req){
     requests[id]=req;

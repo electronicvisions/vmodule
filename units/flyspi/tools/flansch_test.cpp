@@ -6,7 +6,7 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 #include "vmodule.h"
 #include "vmsp6.h"

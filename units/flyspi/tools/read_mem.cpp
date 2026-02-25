@@ -19,7 +19,7 @@
 #include "vmodule.h"
 #include "vmsp6.h"
 
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 static const unsigned int usb_vendorid = 0x04b4;
 static const unsigned int usb_deviceid = 0x1003;
